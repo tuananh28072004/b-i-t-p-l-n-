@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Sắp xếp sách</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        h3 {
+            color: #333;
+            text-align: center;
+        }
+        button {
+            display: block;
+            width: 200px;
+            height: 40px;
+            margin: 20px auto;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+            text-align: center;
+            font-size: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h3>Số cách sắp xếp 5 quyển sách trên kệ</h3>
+    <button onclick="calculate()">Tính toán</button> <!-- Khi nhấn nút, gọi hàm tính toán -->
+    <div id="result"></div> <!-- Phần tử HTML để hiển thị kết quả -->
+    <script>
+        // Hàm tạo ra tất cả các hoán vị của một chuỗi
+        function permute(str) {
+            if (str.length <= 1) {
+                return [str];
+            }
+            var all = [];
+            for (var i = 0; i < str.length; i++) {
+                var remaining = str.substr(0, i) + str.substr(i + 1);
+                var remainingPermutations = permute(remaining);
+                for (var j = 0; j < remainingPermutations.length; j++) {
+                    all.push(str[i] + remainingPermutations[j]);
+                }
+            }
+            return all;
+        }
+
+        // Hàm tính số cách sắp xếp sách
+        function calculate() {
+            var numBooks = 5; // Số sách
+            var numDifferentBooks = 2; // Số sách khác nhau
+            var books = 'AAABB'; // Chuỗi biểu diễn các quyển sách
+
+            var permutations = permute(books); // Tính toán tất cả các hoán vị của chuỗi
+            permutations = [...new Set(permutations)]; // Loại bỏ các hoán vị trùng lặp
+
+            var resultDiv = document.getElementById('result'); // Lấy phần tử HTML để hiển thị kết quả
+            resultDiv.innerHTML = 'Có ' + permutations.length + ' cách sắp xếp 5 quyển sách trên kệ:<br>' + permutations.join('<br>'); // Hiển thị kết quả
+        }
+    </script>
+</body>
+</html>

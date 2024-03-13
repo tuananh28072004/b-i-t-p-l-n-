@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        bai_tap_cai_tui
+    </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        p {
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input,
+        button {
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            padding: 12px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #ket_qua {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+    </style>
+<script>
+// Hàm tính toán
+function tinhToan() {
+  // Lấy các giá trị từ file HTML
+  let soLuong = document.getElementById("so_luong").value;
+  let trongLuong = document.getElementById("trong_luong").value.split(",");
+  let giaTri = document.getElementById("gia_tri").value.split(",");
+  let taiTrong = document.getElementById("tai_trong").value;
+
+  // Khai báo các biến
+  let n = parseInt(soLuong); // Số lượng đồ vật
+  let M = parseInt(taiTrong); // Trọng lượng tối đa của túi
+  let W = [0]; // Mảng lưu trọng lượng của mỗi đồ vật
+  let V = [0]; // Mảng lưu giá trị của mỗi đồ vật
+  let F = []; // Ma trận lưu kết quả trung gian
+  let X = []; // Mảng lưu kết quả cuối cùng
+
+  // Chuyển đổi các giá trị từ chuỗi sang số
+  for (let i = 0; i < n; i++) {
+    W[i + 1] = parseInt(trongLuong[i]);
+    V[i + 1] = parseInt(giaTri[i]);
+  }
+
+  // Hàm tìm giá trị lớn nhất
+  function max(a, b) {
+    return a > b ? a : b;
+  }
+
+  // Khởi tạo ma trận F
+  for (let i = 0; i <= n; i++) {
+    F[i] = [];
+    for (let j = 0; j <= M; j++) {
+      F[i][j] = 0;
+    }
+  }
+
+  // Tính bảng phương án bằng công thức truy hồi
+  for (let i = 1; i <= n; i++) {
+    for (let j = 0; j <= M; j++) {
+      F[i][j] = F[i - 1][j]; // Giả sử không chọn đồ vật thứ i
+      if (j >= W[i]) {
+        // Nếu chọn đồ vật thứ i sẽ được lợi hơn
+        F[i][j] = max(F[i][j], F[i - 1][j - W[i]] + V[i]);
+      }
+    }
+  }
+
+  // Truy vết tìm nghiệm tối ưu
+  let i = n;
+  let j = M;
+  while (i != 0) {
+    if (F[i][j] != F[i - 1][j]) {
+      // Nếu có chọn đồ vật thứ i
+      X[i] = 1; // Đánh dấu đã chọn
+      j = j - W[i]; // Cập nhật trọng lượng còn lại
+    }
+    i--; // Xét đồ vật tiếp theo
+  }
+
+  // Tạo chuỗi kết quả
+  let ketQua = "";
+  ketQua += "Giá trị lớn nhất có thể kiếm được là: " + F[n][M] + "<br>";
+  ketQua += "Cách chọn đồ vật là: <br>";
+  for (let i = 1; i <= n; i++) {
+    if (X[i] == 1) {
+      ketQua += "Chọn đồ vật thứ " + i + "<br>";
+    }
+  }
+
+  // Hiển thị kết quả trên file HTML
+  document.getElementById("ket_qua").innerHTML = ketQua;
+}
+function solveProblem() {
+  // Lặp qua giá trị của a từ 1 đến 20
+  for (let a = 1; a <= 20; a++) {
+    // Tính tổng của 4 số tự nhiên liên tiếp
+    let sum = a + (a + 1) + (a + 2) + (a + 3);
+
+    // Kiểm tra nếu tổng bằng 20, hiển thị kết quả và kết thúc hàm
+    if (sum === 20) {
+      document.getElementById('result').innerHTML = `Dãy số thỏa mãn: ${a}, ${a+1}, ${a+2}, ${a+3}`;
+      return;
+    }
+  }
+
+  // Nếu không tìm thấy dãy số thỏa mãn, hiển thị thông báo
+  document.getElementById('result').innerHTML = 'Không có dãy số nào thỏa mãn.';
+}
+
+// Hàm kiểm tra kết quả khi người dùng nhấn nút "Kiểm tra kết quả"
+function checkResult() {
+  // Gọi hàm giải bài toán
+  solveProblem();
+}
+</script>
+</head>
+<body>
+<h1>Bài toán cái túi </h1>
+<p>Bài toán cái túi yêu cầu chọn một số đồ vật để nhét vào túi sao cho tổng giá trị là lớn nhất.</p>
+<p>Nhập số lượng đồ vật, trọng lượng và giá trị của mỗi đồ vật, và trọng lượng tối đa của túi vào các ô bên dưới, sau đó nhấn nút Tính toán để xem kết quả.</p>
+<form>
+  Số lượng đồ vật: <input id="so_luong" type="number" value="4"><br>
+  Trọng lượng đồ vật: <input id="trong_luong" type="text" value="5,4,6,3"><br>
+  Giá trị đồ vật: <input id="gia_tri" type="text" value="10,8,12,5"><br>
+  Trọng lượng tối đa của túi: <input id="tai_trong" type="number" value="10"><br>
+  <button type="button" onclick="tinhToan()">Tính toán</button>
+</form>
+<div id="ket_qua"></div>
+</body>
+</html>
